@@ -24,3 +24,4 @@ def add_thread():
             return jsonify({"msg":"创建新板块成功！"}), 200    
         else:
             return jsconify({"msg":"用户验证失败！"})
+
