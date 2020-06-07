@@ -5,7 +5,7 @@ from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
     CommentForm
 from .. import db
-from ..models import Permission, Role, User, Post, Comment
+from ..models import Permission, Role, User, Post, Comment, Thread
 from ..decorators import admin_required, permission_required
 
 
@@ -30,7 +30,8 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts,
+    thread = Thread.query.filter_by(id=1).first()
+    return render_template('index.html', form=form, posts=posts,thread=thread,
                            show_followed=show_followed, pagination=pagination)
 
 
