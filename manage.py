@@ -13,8 +13,10 @@ migrate = Migrate(app, db)
 def make_shell_context():
     return dict(app=app)
 
+
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command("db", MigrateCommand)
+
 
 @app.cli.command()
 @click.argument('test_names', nargs=-1)
@@ -26,6 +28,7 @@ def test(test_names):
     else:
         tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
+
 
 if __name__ == '__main__':
     manager.run()
