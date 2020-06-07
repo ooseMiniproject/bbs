@@ -262,11 +262,9 @@ def load_user(user_id):
 class Thread(db.Model):
     __tablename__ = 'threads'
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
-    # timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    posts = db.relationship('Post', backref='thread', lazy='dynamic')
+    name = db.Column(db.String(30))
+    description = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class Post(db.Model):

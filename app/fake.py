@@ -11,12 +11,13 @@ def users(count=100):
     while i < count:
         u = User(email=fake.email(),
                  username=fake.user_name(),
-                 password='password',
+                 password='123456',
                  confirmed=True,
                  name=fake.name(),
                  location=fake.city(),
                  about_me=fake.text(),
-                 member_since=fake.past_date())
+                 member_since=fake.past_date(),
+                 thread_id=0)
         db.session.add(u)
         try:
             db.session.commit()
