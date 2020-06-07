@@ -2,7 +2,7 @@ from random import randint
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
 from . import db
-from .models import User, Post
+from .models import User, Post, Thread
 
 
 def users(count=100):
@@ -17,7 +17,7 @@ def users(count=100):
                  location=fake.city(),
                  about_me=fake.text(),
                  member_since=fake.past_date(),
-                 thread_id=0)
+                )
         db.session.add(u)
         try:
             db.session.commit()
@@ -33,6 +33,16 @@ def posts(count=100):
         u = User.query.offset(randint(0, user_count - 1)).first()
         p = Post(body=fake.text(),
                  timestamp=fake.past_date(),
-                 author=u)
+                 author=u, 
+                 thread_id=1,
+                 )
         db.session.add(p)
+    db.session.commit()
+
+def thread():
+    t = Thread(description="八说了，开冲",
+                user_id=1,
+                name="我踏马社保！"
+            )
+    db.session.add(t)
     db.session.commit()
