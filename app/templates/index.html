@@ -20,7 +20,9 @@
         <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">关注内容</a></li>
         {% endif %}
     </ul>
-    <table>{{thread.description}}</table>
+    <table>
+        <tr><td>{{thread.description}}</td></tr>
+    </table>
     {% include '_posts.html' %}
 </div>
 {% if pagination %}

@@ -31,7 +31,7 @@ def index():
         error_out=False)
     posts = pagination.items
     thread = Thread.query.filter_by(id=1).first()
-    return render_template('index.html', form=form, posts=posts, thread=thread,
+    return render_template('index.html', form=form, posts=posts,thread=thread,
                            show_followed=show_followed, pagination=pagination)
 
 
