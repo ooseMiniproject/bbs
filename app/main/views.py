@@ -1,8 +1,8 @@
-from flask import render_template, redirect, url_for, abort, flash, request,\
+from flask import render_template, redirect, url_for, abort, flash, request, \
     current_app, make_response
 from flask_login import login_required, current_user
 from . import main
-from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
+from .forms import EditProfileForm, EditProfileAdminForm, PostForm, \
     CommentForm
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
@@ -107,7 +107,7 @@ def post(id):
     page = request.args.get('page', 1, type=int)
     if page == -1:
         page = (post.comments.count() - 1) // \
-            current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
+               current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
     pagination = post.comments.order_by(Comment.timestamp.asc()).paginate(
         page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
         error_out=False)
@@ -206,7 +206,7 @@ def followed_by(username):
 @login_required
 def show_all():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
+    resp.set_cookie('show_followed', '', max_age=30 * 24 * 60 * 60)
     return resp
 
 
@@ -214,7 +214,7 @@ def show_all():
 @login_required
 def show_followed():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
+    resp.set_cookie('show_followed', '1', max_age=30 * 24 * 60 * 60)
     return resp
 
 
@@ -253,3 +253,39 @@ def moderate_disable(id):
     db.session.commit()
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
+
+
+@main.route('/moderate/ban_user/<int:id>')
+@admin_required
+@permission_required(Permission.MODERATE)
+def ban_user(id):
+    user = User.query.get_or_404(id)
+    username = user.username
+    role_banned = Role.query.filter_by(name='BannedUser').first()
+    if user.role != role_banned:
+        user.role = role_banned
+        db.session.add(user)
+        db.session.commit()
+        flash(f'已封禁用户{username}')
+    else:
+        flash(f'用户{username}已被封禁，请勿重复操作')
+    return redirect(url_for('.user', username=username))
+
+
+@main.route('/moderate/unban_user/<int:id>')
+@admin_required
+@permission_required(Permission.MODERATE)
+def unban_user(id):
+    user = User.query.get_or_404(id)
+    username = user.username
+    role_banned = Role.query.filter_by(name='BannedUser').first()
+    if user.role == role_banned:
+        role_user = Role.query.filter_by(name='User').first()
+        user.role = role_user
+        db.session.add(user)
+        db.session.commit()
+        flash(f'已解封用户{username}')
+    else:
+        flash(f'用户{username}未被封禁，请勿重复操作')
+
+    return redirect(url_for('.user', username=username))

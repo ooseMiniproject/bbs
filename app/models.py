@@ -39,6 +39,7 @@ class Role(db.Model):
             'Administrator': [Permission.FOLLOW, Permission.COMMENT,
                               Permission.WRITE, Permission.MODERATE,
                               Permission.ADMIN],
+            'BannedUser': []
         }
         default_role = 'User'
         for r in roles:
@@ -198,6 +199,9 @@ class User(UserMixin, db.Model):
 
     def is_administrator(self):
         return self.can(Permission.ADMIN)
+
+    def is_banned(self):
+        return self.can(Permission.COMMENT | Permission.WRITE | Permission.FOLLOW)
 
     def ping(self):
         self.last_seen = datetime.utcnow()
