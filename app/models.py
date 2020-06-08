@@ -267,7 +267,7 @@ def load_user(user_id):
 class Thread(db.Model):
     __tablename__ = 'threads'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
+    title = db.Column(db.String(30))
     description = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
@@ -275,6 +275,7 @@ class Thread(db.Model):
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(30))
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
