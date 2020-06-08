@@ -32,11 +32,11 @@ def posts(count=100):
     thread_count = Thread.query.count()
     for i in range(count):
         u = User.query.offset(randint(0, user_count - 1)).first()
-        t = Thread.query.offset(randint(0, thread_count - 1)).first()
+        t = Thread.query.get(randint(1, thread_count))
         p = Post(body=fake.text(),
                  timestamp=fake.past_date(),
                  author=u,
-                 thread_id=t,
+                 thread_id=t.id,
                  )
         db.session.add(p)
         db.session.commit()
