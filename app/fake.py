@@ -32,32 +32,32 @@ def posts(count=100):
     thread_count = Thread.query.count()
     for i in range(count):
         u = User.query.offset(randint(0, user_count - 1)).first()
-        t = Thread.query.offset(randint(0, user_count - 1)).first()
+        t = Thread.query.offset(randint(0, thread_count - 1)).first()
         p = Post(body=fake.text(),
                  timestamp=fake.past_date(),
                  author=u,
                  thread_id=t,
                  )
         db.session.add(p)
-    db.session.commit()
+        db.session.commit()
 
 
 def threads(count=20):
     fake = Faker('zh_CN')
     user_count = User.query.count()
 
-    t0 = Thread(description="八说了，开冲",
+    t0 = Thread(description="测试板块",
                 user_id=1,
-                name="我踏马社保！"
+                name="测试板块"
                 )
     db.session.add(t0)
     db.session.commit()
 
-    for i in range(count - 1):
+    for i in range(2, count):
         u = User.query.offset(randint(0, user_count - 1)).first()
         t = Thread(description=fake.text(),
                    user_id=u.id,
-                   name="我踏马社保！"
+                   name=f"第{i}板块"
                    )
         db.session.add(t)
     db.session.commit()

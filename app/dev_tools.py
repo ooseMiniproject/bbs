@@ -20,7 +20,10 @@ def reset_db():
                           role=admin_role
                           )
     db.session.add(u_admin)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
     fake.users(10)
     fake.threads(10)
     fake.posts(20)
