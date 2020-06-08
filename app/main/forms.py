@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
+from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
     SubmitField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
@@ -52,6 +52,7 @@ class EditProfileAdminForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
+    title = StringField('标题', validators=[DataRequired()])
     body = PageDownField("What's on your mind?", validators=[DataRequired()])
     submit = SubmitField('Submit')
 

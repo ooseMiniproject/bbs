@@ -295,9 +295,12 @@ def unban_user(id):
 def thread(id):
     form = PostForm()
     if current_user.can(Permission.WRITE) and form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object(),
-                    thread_id=id)
+        post = Post(
+            title=form.title.data,
+            body=form.body.data,
+            author=current_user._get_current_object(),
+            thread_id=id
+        )
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('.thread', id=id))
