@@ -47,7 +47,7 @@
                 {% if current_user.is_administrator() %}
                     <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile
                         [Admin]</a>
-                    {% if user.is_banned() %}
+                    {% if user.is_banned() and not user.is_administrator() %}
                         <a class="btn btn-danger" href="{{ url_for('.ban_user', id=user.id) }}">ban[Admin]</a>
                     {% else %}
                         <a class="btn btn-danger" href="{{ url_for('.unban_user', id=user.id) }}">unban[Admin]</a>

@@ -1,19 +1,56 @@
 .profile-thumbnail {
     position: absolute;
 }
+
 .profile-header {
     min-height: 260px;
     margin-left: 280px;
 }
+
 div.post-tabs {
     margin-top: 16px;
 }
+
+ul.threads {
+    list-style-type: none;
+    padding: 0px;
+    margin: 16px 0px 0px 0px;
+    border-top: 1px solid #e0e0e0;
+}
+
+div.post-tabs ul.threads {
+    margin: 0px;
+    border-top: none;
+}
+
+ul.threads li.thread {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+div.thread-name {
+    font-weight: bold;
+    font-size: 150%;
+}
+
+div.thread-author {
+    font-weight: bold;
+    font-size: 80%
+}
+
+
+div.thread-content {
+    margin-left: 48px;
+    min-height: 48px;
+}
+
 ul.posts {
     list-style-type: none;
     padding: 0px;
     margin: 16px 0px 0px 0px;
     border-top: 1px solid #e0e0e0;
 }
+
 div.post-tabs ul.posts {
     margin: 0px;
     border-top: none;

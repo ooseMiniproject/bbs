@@ -1,0 +1,15 @@
+<ul class="threads">
+    {% for thread in threads %}
+        <li class="thread">
+            <div class="thread-content">
+                <div class="thread-name"><a href="{{ url_for('.thread',id=thread.id) }}">{{ thread.name }}</a></div>
+                <div class="thread-author">管理员：<a
+                        href="{{ url_for('.user', username=thread.author.username) }}">{{ thread.author.username }}</a>
+                </div>
+                <div class="thread-body">
+                    {{ thread.description }}
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

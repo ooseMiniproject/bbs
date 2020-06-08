@@ -5,34 +5,33 @@
 {% block title %}校园论坛{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>你好, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}同学{% endif %}!</h1>
-</div>
-<div>
-    {% if current_user.can(Permission.WRITE) %} 
-    {{ wtf.quick_form(form) }}
-    {% endif %}
-</div>
-<div class="post-tabs">
-    <ul class="nav nav-tabs">
-        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">{{thread.name}}</a></li>
-        {% if current_user.is_authenticated %}
-        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">关注内容</a></li>
+    <div class="page-header">
+        <h1>你好, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}同学{% endif %}!</h1>
+    </div>
+    <div class="post-tabs">
+        <ul class="nav nav-tabs">
+            <li{% if not show_followed %} class="active"{% endif %}><a
+                    href="{{ url_for('.show_all') }}">全部板块</a></li>
+            {% if current_user.is_authenticated %}
+                <li{% if show_followed %} class="active"{% endif %}>
+                    <a href="{{ url_for('.show_followed') }}">关注人的帖子 </a>
+                </li>
+            {% endif %}
+        </ul>
+        {% if show_followed %}
+            {% include '_posts.html' %}
+        {% else %}
+            {% include '_threads.html' %}
         {% endif %}
-    </ul>
-    <table>
-        <tr><td>{{thread.description}}</td></tr>
-    </table>
-    {% include '_posts.html' %}
-</div>
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.index') }}
-</div>
-{% endif %}
+    </div>
+    {% if pagination %}
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, '.index') }}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
-{{ pagedown.include_pagedown() }}
+    {{ super() }}
+    {{ pagedown.include_pagedown() }}
 {% endblock %}

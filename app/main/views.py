@@ -11,28 +11,24 @@ from ..decorators import admin_required, permission_required
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    form = PostForm()
-    if current_user.can(Permission.WRITE) and form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     show_followed = False
     if current_user.is_authenticated:
         show_followed = bool(request.cookies.get('show_followed', ''))
     if show_followed:
-        query = current_user.followed_posts
+        pagination = current_user.followed_posts.order_by(Post.timestamp.desc()).paginate(
+            page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+            error_out=False)
+        posts = pagination.items
+        return render_template('index.html', posts=posts,
+                               show_followed=True, pagination=pagination)
     else:
-        query = Post.query.filter_by(thread_id=1)
-    pagination = query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    thread = Thread.query.filter_by(id=1).first()
-    return render_template('index.html', form=form, posts=posts,thread=thread,
-                           show_followed=show_followed, pagination=pagination)
+        pagination = Thread.query.order_by(Thread.id.asc()).paginate(
+            page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+            error_out=False)
+        threads = pagination.items
+        return render_template('index.html', threads=threads,
+                               show_followed=False, pagination=pagination)
 
 
 @main.route('/user/<username>')
@@ -86,7 +82,7 @@ def edit_profile_admin(id):
     form.email.data = user.email
     form.username.data = user.username
     form.confirmed.data = user.confirmed
-    form.role.data = user.role_id
+    form.role.data = user.role_idinde
     form.name.data = user.name
     form.location.data = user.location
     form.about_me.data = user.about_me
@@ -257,13 +253,16 @@ def moderate_disable(id):
 
 
 @main.route('/moderate/ban_user/<int:id>')
-@admin_required
+@login_required
 @permission_required(Permission.MODERATE)
 def ban_user(id):
     user = User.query.get_or_404(id)
     username = user.username
     role_banned = Role.query.filter_by(name='BannedUser').first()
-    if user.role != role_banned:
+    role_admin = Role.query.filter_by(name='Administrator').first()
+    if user.role == role_admin:
+        flash('无法封禁管理员！')
+    elif user.role != role_banned:
         user.role = role_banned
         db.session.add(user)
         db.session.commit()
@@ -274,7 +273,7 @@ def ban_user(id):
 
 
 @main.route('/moderate/unban_user/<int:id>')
-@admin_required
+@login_required
 @permission_required(Permission.MODERATE)
 def unban_user(id):
     user = User.query.get_or_404(id)
@@ -290,3 +289,22 @@ def unban_user(id):
         flash(f'用户{username}未被封禁，请勿重复操作')
 
     return redirect(url_for('.user', username=username))
+
+
+@main.route('/thread/<int:id>', methods=['GET', 'POST'])
+def thread(id):
+    form = PostForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.thread', id=id))
+    page = request.args.get('page', 1, type=int)
+    thread = Thread.query.get_or_404(id)
+    pagination = Post.query.filter_by(thread_id=id).order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('thread.html', form=form, posts=posts, thread=thread,
+                           show_followed=show_followed, pagination=pagination)

@@ -22,5 +22,5 @@ def reset_db():
     db.session.add(u_admin)
     db.session.commit()
     fake.users(10)
-    fake.thread()
+    fake.threads(10)
     fake.posts(20)
