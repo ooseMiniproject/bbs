@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from . import models
 from . import db
@@ -50,3 +50,19 @@ def set_moderater(username: str):
         user.change_role(Moderator_role)
         db.session.add(user)
         db.session.commit()
+
+
+def get_user(username: Optional[str] = None, **kwargs) -> models.User:
+    if username is not None:
+        user = models.User.query.filter_by(username=username, **kwargs).first()
+    else:
+        user = models.User.query.filter_by(**kwargs).first()
+    return user
+
+
+def get_users(username: Optional[str] = None, **kwargs) -> List[models.User]:
+    if username is not None:
+        users = models.User.query.filter_by(username=username, **kwargs).all()
+    else:
+        users = models.User.query.filter_by(**kwargs).all()
+    return users
