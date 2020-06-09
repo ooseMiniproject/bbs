@@ -52,6 +52,17 @@ def set_moderater(username: str):
         db.session.commit()
 
 
+def set_admin(username: str):
+    user = models.User.query.filter_by(username=username).first()
+    if user is None:
+        print('user not found')
+    else:
+        admin_role = models.Role.query.filter_by(name='Administrator').first()
+        user.change_role(admin_role)
+        db.session.add(user)
+        db.session.commit()
+
+
 def get_user(username: Optional[str] = None, **kwargs) -> models.User:
     if username is not None:
         user = models.User.query.filter_by(username=username, **kwargs).first()
