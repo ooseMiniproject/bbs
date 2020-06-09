@@ -244,6 +244,9 @@ class User(UserMixin, db.Model):
         return Post.query.join(Follow, Follow.followed_id == Post.author_id) \
             .filter(Follow.follower_id == self.id)
 
+    def change_role(self, role):
+        self.role = role
+
     def __repr__(self):
         return '<User %r>' % self.username
 
