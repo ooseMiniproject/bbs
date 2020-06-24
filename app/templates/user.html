@@ -48,9 +48,9 @@
                     <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">修改个人信息
                         [管理员]</a>
                     {% if user.is_banned() and not user.is_administrator() %}
-                        <a class="btn btn-danger" href="{{ url_for('.ban_user', id=user.id) }}">解封[管理员]</a>
+                        <a class="btn btn-danger" href="{{ url_for('.ban_user', id=user.id) }}">封禁[管理员]</a>
                     {% else %}
-                        <a class="btn btn-danger" href="{{ url_for('.unban_user', id=user.id) }}">封禁[管理员]</a>
+                        <a class="btn btn-danger" href="{{ url_for('.unban_user', id=user.id) }}">解封[管理员]</a>
                     {% endif %}
                 {% endif %}
             </p>
